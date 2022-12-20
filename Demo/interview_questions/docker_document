@@ -1,0 +1,152 @@
+hub.docker.com  is a registry similar to git hub that contains a number of online repositories.
+Docker image is static version OR we can say in repository it is a set of bytes.
+When Docker image downloaded and running then it's called container. So we can say image is a static version and container is a running version.
+When we open a cmd prompt and run docker cmd, SO we can say that cmd prompt is the docker client and docker client send all these cmd to docker
+daemon (Docker engine). So docker daemon is responsible for manage out local stuff (container, images) and repositories as well.
+
+== docker run -p 5000:5000 public_folder_on_hub/docker_image_name ==
+
+This cmd will download the "docker_image_name" and run that on our local machine in 5000 port. But here our cmd promt is tie up with life cycle of
+the docker container. Once ctrl+c then the container also shut down. If we want to run the docker container in back end and don't want to tie up the
+command prompt with lifecycle of container then we have to start the conatiner in deteched mode by using "-d" and then we get a container id.
+
+== docker run -p 5000:5000 -d public_folder_on_hub/docker_image_name ==
+
+now if I want to follow the logs of the conatiner then use the below cmd. There "-f" mean follow the logs and we can continueosly check all the new logs
+
+== docker logs -f container-id ==
+
+and we can stop the container by using
+
+== docker container stop container-id ==
+
+If I want to see how many container runing then use the below cmd and then will list all the running container with id, name and port.
+
+== docker container ls ==
+
+and similarly we can list the docker imanges also
+
+== docker images ==
+
+we can run the another container also for the same application by providing the different port number.
+
+== docker run -p 5001:5000 public_folder_on_hub/docker_image_name ==
+
+we can check all the running + exited containers also by using below cmd where "-a" stands for all.
+
+== docker conatiner ls -a ==
+
+Now the docker is very easy to install in local machine as well as in cloud platform also. Azure provide the azure container and AWS provide the elastic container. Cloud platform run on any OS and we can easily install the docker on cloud server OS.
+
+Docker image CMD:
+	TAG: we can tag a exisitng docker image with new tag. In case if we needs to run the same docker image in different environment then we can 	provide the new tag for other env.
+		C:\Users\rohkaush1>docker images
+		REPOSITORY              TAG       IMAGE ID       CREATED         SIZE
+		mongo                   3.6       2f21415cb85f   10 months ago   453MB
+		hello-world             latest    d1165f221234   12 months ago   13.3kB
+		mockserver/mockserver   latest    12e4cc75d519   15 months ago   216MB
+
+		C:\Users\rohkaush1>docker tag hello-world:latest hello-world:release
+		C:\Users\rohkaush1>docker images
+		REPOSITORY              TAG       IMAGE ID       CREATED         SIZE
+		mongo                   3.6       2f21415cb85f   10 months ago   453MB
+		hello-world             latest    d1165f221234   12 months ago   13.3kB
+		hello-world             release   d1165f221234   12 months ago   13.3kB
+		mockserver/mockserver   latest    12e4cc75d519   15 months ago   216MB
+
+	PULL: pull cmd download the image from registry to your local. If we not provide ant version then docker will download the latest image.
+		docker pull mysql
+	HISTORY: we can check all the history of a docker image and that shows all the steps that were involved in creating this docker image
+		docker image hostory image_id
+	INSPECT: by using this we can get all the information of a docker image.
+		docker inspect 2f21415cb85f
+	REMOVE: by using this we can remove the particular docker image from our local machine
+		docker image remove image_id
+
+Docker conatiner CMD:
+	run: for running a docker image
+		== docker container run -p 5000:5000 -d image_name:tag ==  and that will provide u the docker conatiner id and u can check the logs by using that id == docker logs -f container_id ==
+	PAUSE: we can pause the container by usinf this cmd
+		docker ocnatiner pause container_id
+	UNPAUSE: we can un pause the paused container
+		docker container unpause container_id
+	INSPECT: by using this we can get all the information of a docker container
+		docker container inspect container_id
+	PRUNE: if we want to remove all the stopped container
+		docker container prune
+	STOP: If we want to gracefully shutdown the docker container
+		docker container stop container-id
+	KILL: if we want to immediately terminate the container process.
+		docker container kill container_id
+	RESTART: If we want to automatically start the conatiner when docker desktop restart then we have to apply the restart policy
+		docker container run -p 5000:5000 -d --restart=always image_name:tag
+
+Docker other CMD:
+	EVENTS: If we wants to check what's happeing with docker environment, then we can use it
+		docker events           == display all the events
+		docker top container_id == shows the top of the events on this container_id
+		docker stats			== shows how many CPU, memory % will consumer by which container
+		docker container run -p 5000:5000 -m 512m --cpu-quota 5000 id image_name:tag ==  that will run a conatiner and use only 512m memory and 5% cpu
+		docker system df == shows us what docker daemon manages
+
+Build Docker Image Manually:
+	Build a Jar - /target/hello-world-rest-api.jar
+	Setup the Prerequisites for Running the JAR - openjdk:8-jdk-alpine  == docker run -dit openjdk:8-jdk-alpine
+		docker container exec container_name ls/tmp
+	Copy the jar
+		docker container cp target/hello-world-rest-api.jar container_name:/tmp
+		save the container as image:
+			docker container commit container_name image_repository_name:image_tag
+			docker run image_repository_name:image_tag  ==  This will not start because we have not specify any startupn cmd
+			docker container commit --change="CMD ["java","-jar","/tmp/hello-world-rest-api.jar"]" modest_wilson kaushik_docker_image/hello-world-rest-api:manual2
+
+	Run the jar
+		docker run -p 8080:8080 kaushik_docker_image/hello-world-rest-api:manual2
+
+Docker FIle To Build Docker Image:
+	Create a docker file
+		FROM openjdk:8-jdk-alpine
+		ADD target/hello-world-rest-api.jar hello-world-rest-api.jar
+		ENTRYPOINT ["sh", "-c", "java -jar /hello-world-rest-api.jar"]
+	docker build -t kaushik_docker_image/hello-world-rest-api:dockerfile1 .== This cmd will create a docker image by using this docker file and then we
+																				can start the container for docker image.
+																				If we again run the same build cmd then a new docker image created by using the existing image from cache. But if we change anything in docker file then the cmd will generate the new docker image without using cache.
+
+Docker Spotify Plugin To Create Docker Image:
+	Before that we have to build the jar and then build the docker cmd for creating the docker image. But now we can add a plugin in our pom.xml file and when build the jar file, in the same process our docker image also build. So the docker build is now part of our maven build.
+	<plugin>
+		<groupId>com.spotify</groupId>
+		<artifactId>dockerfile-maven-plugin</artifactId>
+		<version>1.4.10</version>
+		<executions>
+			<execution>
+				<id>default</id>
+				<goals>
+					<goal>build</goal>
+				</goals>
+			</execution>
+		</executions>
+		<configuration>
+			<repository>kaushik_docker_image/${project.name}</repository>
+			<tag>${project.version}</tag>
+			<skipDockerInfo>true</skipDockerInfo>
+		</configuration>
+	</plugin>
+	we can make this docker file generic for all the projects. Whatever the jar file created copied into app.jar and then run it.
+		FROM openjdk:8-jdk-alpine
+		EXPOSE 8080
+		ADD target/*.jar app.jar
+		ENTRYPOINT ["sh", "-c", "java -jar /app.jar"]
+	We can use the "jib-maven-plugin" instead of "dockerfile-maven-plugin". In that case we don't need to write the docker file. We can provide the configuration in "jib-maven-plugin" like image name, tag, base-image, starter file name, port etc.
+
+
+Docker Image For Spring Boot Web Application:
+	Create a docker file
+		FROM tomcat:8.0.51-jre8-alpine
+		EXPOSE 8080
+		RUN rm -rf /usr/local/tomcat/webapps/*
+		COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+		CMD ["catalina.sh","run"]
+	Add the spotify plugin that will create the docker image while building the war file.
+
+

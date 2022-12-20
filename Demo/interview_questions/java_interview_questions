@@ -1,0 +1,1331 @@
+
+Project: We have developed a ADQ Neobank with the help of some fintech partners, name is WIO. The project have 7 teams POD1...POD7 and I'm working in
+		POD3. My team is responsible for the payment transfer module. This bank is specially design for SME buiness. The company open their account in
+		WIO. At the time of onboarding a user bank check their eligibility for cheque books and cards.
+		In POD3, 1st user needs to add a beneficiary with IBAN and then validate this beneficiary with the help of unity(FINTECH).
+		after that we have local, international, cheque and utility payment modes.
+		International - wise is the FINTECH
+		Utitlity - specially design for bill payment and all the MBME(ATSILAT, MU) provides the mbme api for payment.
+		cheque -  user click a photo and then upload it and after that local transfer flow start.
+		Local - Outward payment service aimed to initiate the local transfer payment. But before initiating it check the transaction is future dated or not. For that call the unity api and get the transaction value date.
+			If the transaction is future dated and request to transfer the amount in other bank then apply all validations and schedule the transaction by using scheduler service of app-common-service and send the
+			notification to the user. If the request for transfer in wio to wio bank then no need to schedule the transaction that will process at the same time.
+			If the transaction is not future dated then apply all the validations and then get the beneficiary details, limit details and owner account details. If any validation fail then send
+			the proper error message to the app user. If all the validations passed then initiate journey events and create the transaction payload and send to the screening service for napier screening.
+			If get the NO-HIT response from screening then send the final request to the unity. If get failure response from unity then send the error screen to the app user else send the success screen
+			and process the notification part.
+
+============== Latest ==========================
+Cross-origin resource sharing (CORS) is a browser security feature that restricts cross-origin HTTP requests that are initiated from scripts running in the browser. If your REST API's resources receive non-simple cross-origin HTTP requests, you need to enable CORS support.
+
+merge sort -> Collections.sort -> nlogn
+
+Diff between spring mvc and spring boot
+Spring boot provides:zoom
+		Starter Projects: Make it easy to build variety of applications
+		Auto Configurations:
+		Actuautor
+		Embeded Server
+		Profiles and configuration properties
+		Logging and error handling
+
+
+i. private methods in interface
+	public interface Foo {
+		default void bar() {
+			System.out.print("Hello");
+			baz();
+		}
+
+		private void baz() {
+			System.out.println(" world!");
+		}
+	}
+
+	public interface Foo {
+		static void buzz() {
+			System.out.print("Hello");
+			staticBaz();
+		}
+
+		private static void staticBaz() {
+			System.out.println(" static world!");
+		}
+	}
+
+	public class CustomFoo implements Foo {
+		public static void main(String... args) {
+			Foo customFoo = new CustomFoo();
+			customFoo.bar();                    //default method will call with the help of implemented class object
+			Foo.buzz();							//static method can be called with name of Interface
+		}
+	}
+
+a. why use double null check in singleton pattern?
+	public static Singleton synchronized getInstance(){    // This process is very expensive due to cost of synchronization in every call.
+		if(instance == null){
+			instance = new Singleton();
+		}
+		return instance
+	}
+
+	public static Singleton getInstance(){    // This process is reduced the cost of synchronization and improve the performance, by only locking
+		if(instance == null){				  // the critical section of the code (the code which create the instance of singleton class)
+			synchronized(Singleton.class){
+				if(instance == null)
+					instance = new Singleton();
+			}
+		}
+		return instance
+	}
+
+
+
+1.	Diff between JVM and JRE ?
+JRE is a bundle of software that allows java program to run, whereas JVM is the environment for executing the java code. We could not download JVM separately. JVM is the part of JRE.
+
+2.	Memory management in java.
+
+Heap: is a shared runtime data area and stores the actual object in the memory.
+Method Area: is a logical part of HEAP area and created on virtual machine setup. The memory is allocated for class structure, method area and constructor field data and also interfaces and special method used in class.
+JVM Stack: Stack is created at the same time when a thread is created and is used to store the data and partial result which will be needed while returning value for method.
+Native Method Stack: is not written in java language and the memory is allocated for each thread when its created.
+PC Register: Each JVM thread which carries out the task of a specific method has a program counter register associated with it.
+
+2(ii). How to increase heap size in windows?
+Setup JAVA_OPTS as a system variable with the following content:
+JAVA_OPTS="-Xms256m -Xmx512m"
+After that in a command prompt run the following commands:
+SET JAVA_OPTS="-Xms256m -Xmx512m"
+This can be explained as follows:
+allocate at minimum 256MBs of heap
+allocate at maximum 512MBs of heap
+
+3.	Difference between serial and parallel GC in java ?
+Serial GC is a default copying collector which use only one GC thread for GC operation while a parallel collector use multiple GC thread for GC operation.
+
+3(i). Which algorithm used by GC?
+The Mark-Sweep algorithm is the most common garbage collection algorithm, which performs two operations. It first marks the objects to be garbage-collected in the memory space and then clears the marked objects up from the heap.
+
+3(ii). Diff between PUT and POST http method?
+The difference between POST and PUT is that PUT requests are idempotent. That is, calling the same PUT request multiple times will always produce the same result. In contrast, calling a POST request repeatedly have side effects of creating the same resource multiple times.
+
+4.	What is the difference between is-a relationship and has-a relationship ?
+Is-a relationship is pure inheritance with parent and child relation. Has-a relationship is also known as composition in java. Without inheritance , just use the other class reference in your class.
+Class Book{
+	String title;
+	String author;
+}
+
+Class Library{
+	Private List<Book> books;
+	Library(List<Book> books){
+		This.books = books;
+	}
+}
+
+5.	What will happen if one of the member in the class not implements the Serializable interface ?
+If you wants to serialize an object of a class which implements Serializable , but the object include a reference to non-serializable class then a ‘NotSerialzableException’ will be thrown at runtime.
+
+6.	If a class is Serializable but its super class is not, what will be the state of the instance variables inherited from super class after deserialization?
+The values of instance variable inherited from super class will be initialized by calling  constructor of non-serializable super class during deserialization process. Once the constructor chaining started, it wouldn’t be possible to stop it.
+
+7.	Suppose super class of a new class implement Serializable interface, how can you avoid new class to being serialized?
+If Super Class of a Class already implements Serializable interface in Java then its already Serializable in Java, since you can not unimplemented an interface its not really possible to make it Non Serializable class but yes there is a way to avoid serialization of new class. To avoid Java serialization you need to implement writeObject() and readObject() method in your Class and need to throw NotSerializableException from those method.
+
+
+8.	Difference between soft and week reference ?
+A soft reference is eligible for the collection by GC but probably won’t be collected until it’s memory is needed i.e. GC before outofmemoryerror. A week reference is reference that does not protect a referenced object from collection by GC.
+
+9.	Exception propagation in java
+Exception propagation in java occurs when exception thrown from the top of the stack. When it is not caught, exception drops down the call stack of the preceding method. If it is not caught there, it is further drops down to the previous method.
+
+10.	What is the compile time constants ?
+In java language, if a primitive type or a string type defined as a constant and value is known at compile time, then compiler replace the constant name everywhere in the code with its value.
+
+11.	Wildcard generics in java.
+The question mark ‘?’ is known as wildcard in generic programing. It represent the unknown type.
+Upper bounded wildcards:  public static void add(List<? Extends Number> list)
+This method will accept the List<Integer>, List<Double>, List<Number>, all the parameter.
+	Lower bounded wildcards: public void printOnlyIntegerOrSuperClassObj(List<? Super Integer)
+This method accept only List<Integer>, List<Number> not the List<Double>. Because Double is not the super class of Integer.
+	Unbounded Wildcards: public void add(List<?> list)
+				This method will accept all the type of objects.
+
+12.	Difference between type and wildcard generic ?
+Wildcard generic works only when one parameter in a function and type generic work on multiple parameters. Wildcard support Upper bound, lower bound and unbounded but type generic support only upper bound.
+
+13.	Difference between ClassNotFoundException and NoClassDefFoundError ?
+ClassNotFoundException is a checked exception and occurs when you try to load a class at run time using class.forName() or loadClass() and requested class not found in class path. Most of the this exception will occurs when you try to run an application without updating classpath with jar.
+NoClassDefFoundError occurs when class was present during compile time and program was compiled and linked successfully but class was not present during run time.
+
+14.	Auto resource management in java 7.
+Try with resource statement is a try statement that declares one or more resources.
+A resource is an object that must be closed after the program finished using it. Any object that implements java.lang.Closeable or java.io.Closeable are resource
+Actually Closeable interface extends the AutoCloseable interface and AutoCloseable was specially designed to work with try-with-resource statement.
+
+Try(BufferedReader br = new BufferedReader(new FileReader(str)){
+
+}
+We don’t need to close the resource object because JVM itself call the close method after the try block finished.
+
+15.	What is the interrupted exception ?
+When we call Thread.interrupt() and sends an interrupt request to a thread. The interrupted status of the thread is set to true. If the thread is currently blocked by a call to sleep or wait, an interrupted exception is thrown.
+
+16.	How to handle nullpointerexception in java ?
+Before java 8 we need to check each object and their nested object for null OR we can use try and catch block with nullponterexception handler. But in java8 they introduce a new feature i.e. Optional.
+
+public String getStreetName(Person person) {
+    if(person == null)
+      return null;
+  return Optional.ofNullable(person.getAddress()).map(Address::getStreetName).orElse(null);
+}
+
+17.	NumberFormatException in java.
+When we try to convert a string into a numeric value such as float, integer, but the format of the string is not appropriate or illegal. For example when string is null. It’s a unchecked exception.
+
+18.	IndexOutOfBoundException in java.
+When we try to access an invalid index with in a collection.
+
+19.	illeagalStateException in java.
+When you call a method at illegal or inappropriate time and illeagalstateexception is generated.
+ListIterator<String> it = List.listIterator()
+It.remove()
+Remove method of the arraylist class remove the last element after calling the next of previous method and here we are trying to remove the element without moving to the first position then illeagalstateexception occurs.
+
+20.	OutOfMemoryError in java.
+It usually means that you are doing something wrong, either holding onto object too longs, or trying to process too much data at a time.
+
+
+21.	StackOverFlowError in java.
+The main cause of stackoverflowerror is that we have not provided the proper terminating condition in our recursive function, which means it will turn into an infinite loop.
+
+22.	ExceptionIntializerError in java.
+When we use uninitialized static variables inside the static block then this error occurs.
+
+23.	What are the thread states ?
+New, Runnable, Blocked, Waiting, Time Waiting, Terminated
+
+24.	Priority of thread in java.
+Accepted value for the priority of thread is in range of 1 to 10. There are three static variables in Thread class
+Public static int MIN_PRIORITY = 1
+Public static int NORM_PRIORITY = 5
+Public static int MAX_PRIORITY = 10
+
+25.	Diff between sleep and yield method of Thread in java.
+Sleep : cause the thread to definitely stop executing for a given amount of time. If no other thread or process needs to be run, then CPU will be idle(probably enter in a power saving mode)
+Yield : is a static method and it can stop the currently executing thread and will give a chance to other waiting thread of same priority. If in case there are no waiting threads or if all the waiting threads have low priority then the same thread will continue their execution.
+Join : allows one thread to wait until another thread completes its execution. If t is a Thread object whose thread is currently executing, then t.join() will make sure that t is terminated before the next instruction is executed by the program.
+
+26.	What is the cyclic barrier in java?
+A CyclicBarrier is a synchronizer in java that allows a set of threads to wait for each other to reach a common execution point, also called a barrier. CyclicBarrier are used in a program where we have a fixed number of threads that must wait for each other to reach a common point before continuing execution.
+
+27.	Diff between CyclicBarrier and CountDownLatch ?
+Both are used in a scenario where one thread waits for one or more thread to complete their job before start processing but there is one difference that we could not reuse the CountDownLatch.
+
+28.	How to make a daemon thread ?
+Just call Thread.setDaemon(true) on the thread object.
+
+28(ii) Explain the executor framework?
+The java.util.concurrent.Executors provide factory methods that are being used to create ThreadPools of worker threads. Thread pools overcome this issue by keeping the threads alive and reusing the threads. Any excess tasks flowing in that the threads in the pool can handle are held in a Queue. Once any of the threads get free, they pick up the next task from this queue.
+Some types of Java Executors are listed below:
+	SingleThreadExecutor
+	FixedThreadPool(n)
+	CachedThreadPool
+	ScheduledExecutor
+
+Executor 1: SingleThreadExecutor
+A single thread pool can be obtained by calling the static newSingleThreadExecutor() method of the Executors class. It is used to execute tasks sequentially.
+Syntax:
+ExecutorService executor = Executors.newSingleThreadExecutor();
+
+Executor 2: FixedThreadPool(n)
+As the name indicates, it is a thread pool of a fixed number of threads. The tasks submitted to the executor are executed by the n threads and if there is more task they are stored on a LinkedBlockingQueue. It uses Blocking Queue.
+Syntax:
+ExecutorService fixedPool = Executors.newFixedThreadPool(2);
+
+Executor 3: CachedThreadPool
+Creates a thread pool that creates new threads as needed, but will reuse previously constructed threads when they are available. Calls to execute will reuse previously constructed threads if available. If no existing thread is available, a new thread will be created and added to the pool. It uses a SynchronousQueue queue.
+ExecutorService executorService = Executors.newCachedThreadPool();
+
+Executor 4: ScheduledExecutor
+Scheduled executors are based on the interface ScheduledExecutorService which extends the ExecutorService interface. This executor is used when we have a task that needs to be run at regular intervals or if we wish to delay a certain task.
+ScheduledExecutorService scheduledExecService = Executors.newScheduledThreadPool(1);
+
+
+29.	What is the WeakHashMap in java ?
+WeakHashMap is an implementation of the Map interface. WeakHashMap is almost same as HashMap except in case of WeakHashMap, if object is specified as key doesn’t contain any references- it is eligible for garbage collection even though it is associated with WeakHashMap. i.e Garbage Collector dominates over WeakHashMap.
+
+class WeakHashMapDemo
+{
+    public static void main(String args[])throws Exception
+    {
+        WeakHashMap m = new WeakHashMap();
+        Demo d = new Demo();
+
+        // puts an entry into WeakHashMap
+        m.put(d," Hi ");
+        System.out.println(m);
+
+        d = null;
+
+        // garbage collector is called
+        System.gc();
+
+        // thread sleeps for 4 sec
+        Thread.sleep(4000); .
+
+        System.out.println(m);
+    }
+}
+
+class Demo
+{
+    public String toString()
+    {
+        return "demo";
+    }
+
+    // finalize method
+    public void finalize()
+    {
+        System.out.println("finalize method is called");
+    }
+}
+
+
+30.	What is Load Factor ?
+The Load factor is a measure that decides when to increase the HashMap capacity to maintain the get() and put() operation complexity of O(1). The default load factor of HashMap is 0.75f (75% of the map size). Default size of map is 16. In java8 the internal structure of map changed i.e. now they use tree instead of linked list.
+
+31.	What is the Jlink?
+Jlink is a tool that generates a custom java runtime image that contains only the platform modules that are required for a given application. Such a runtime image acts exactly like the JRE but contains only the modules we picked and dependencies they need to function.
+e.g. If we have to run only helloWorld program, then why load the complete JRE in memory.
+
+32.	What is the BlockingQueue?
+BlockingQueue<Person> blockingQueue = new LinkedBlockingDeque<>(5);
+
+In producer consumer problem, when we create a queue and producer produce the elements. When the queue size becomes full then we need to apply the wait on producer thread and notify the consumer thread. When consumer consumes everything then we need to wait the consumer and notify the producer thread.
+
+But if we are using BlockingQueue and use the put() and take() methods then we doesn’t need to apply wait and notify. Everything is take care by BlockingQueue itself.
+
+33.	 What is difference between Spring JDBC template and hibernate?
+Hibernate connects with the database itself and uses HQL to execute the query and then map the result with java objects. There are many ways to manage the entities in hibernate, how to persist, transaction etc. JDBC template is a simple tool that helps you to manage the sql queries and transactions. The result will be the object type array not the java object.
+
+34.	Java Stream operations type ?
+Intermediate operations: map, filter, sorted
+Terminal Operations: forEach, collect, reduce
+
+35.	Difference between map() and flatMap() of stream?
+Map() returns a single value and flatMap() returns a stream of value.
+
+The Stream.map() function take a Stream and transform into the another Stream. It applies a function on each element of the Stream and store the return value into a new Stream.
+List<String> list = new ArrayList<>(){{
+add(“1”);
+add(”2”);
+add(”3”);
+add(”4”);
+add(”5”); }
+};
+List lisOfInteger = list.stream().map(Integer::valueOf()).collect(Collectors.toList());
+		OR
+List listOfInteger = Stream.of(“1”,”2”,”3”,”4”,”5”).map(x -> Integer.valueOf(x).collect(Collectors.toList());
+
+In this example we have a stream of string and by using map() function we have converted this stream into stream of integer.
+
+The Stream.flatMap() function is a combination of map and flat operation. The key difference is the function returns the stream of values or list of values rather than a single value.
+
+List<String> list1 = Arrays.asList("1","2","3") ;
+		List<String> list2 = Arrays.asList("4","5","6") ;
+		List<String> list3 = Arrays.asList("7","8","8") ;
+
+Set<Integer> set = Stream.of(list1, list2, list3).flatMap(list -> list.stream().map(Integer::valueOf)).collect(Collectors.toSet());
+		System.out.println(set);
+
+In this example we merge the three list and also convert them into a list of Integer type.
+
+35(ii) Explain functional interface.
+A functional interface is an interface that contains only single abstract method. They can have only one functionality. Lamda expression can be used to represnt the instance of fucntional interface. @FunctionalInterface annotation is used to ensure that the functional interface can’t have more than one abstract method
+Runnable –> This interface only contains the run() method.
+Comparable –> This interface only contains the compareTo() method.
+ActionListener –> This interface only contains the actionPerformed() method.
+Callable –> This interface only contains the call() method.
+
+JAVA 8 introduced
+Consumer  -> Bi-Consumer    : accept one argument and no return value
+Predicate -> Bi-Predicate   : accept one argument and return boolean value
+Function  -> Bi-Function    : accept one argument and return a value after the processing.
+Supplier					: does not accept any argument and still returns a single output
+
+
+36.	G4 Design patterns.
+	There are 23 design pattern under 3 categories -
+		Creational Design Pattern : The design patterns that deal with the creation of an object. Factory, Singleton
+		Structural Design Pattern : The design patterns in this category deals with the class structure such as Inheritance and Composition.   	Decorator, Faced, Front Controller Design Pattern
+		Behavioral Design Pattern: This type of design patterns provide solution for the better interaction between objects, how to provide lose coupling, and flexibility to extend easily in future. Iterator, strategy
+
+37.	SOLID principles ?
+Single Responsibility: A class should have only one responsibility.
+Open/Close: A class should be open for extension but closed for modification.
+Liskove Substituition: If class A is subtype(child) of class B, then we should be able to replace B with A without distributing the behavior of our program.
+Interface Segregation: Larger interface should be split into smaller one. By doing so, we can ensure that implementing classes only need to be concerned about the method that are of interest to them.
+
+public interface BearKeeper {
+    void washTheBear();
+    void feedTheBear();
+    void petTheBear();
+}
+
+We should be :
+
+public interface BearCleaner {
+    void washTheBear();
+}
+
+public interface BearFeeder {
+    void feedTheBear();
+}
+
+public interface BearPetter {
+    void petTheBear();
+}
+
+Dependency Inversion: Inject the object of a class into the required one.
+
+38. Difference between fail fast and fail safe?
+Concurrent Modification in programming means to modify an object concurrently when another task is already running over it.
+For example: In JAVA to modify a collection when another thread is iterating over it. Some iterator implementation may choose to throw
+ConcurrentModificationException if this behaviour is detected.
+Iterators in java are used to iterate over the Collection objects.Fail-Fast iterators immediately throw ConcurrentModificationException if there is structural modification of the collection. Structural modification means adding, removing any element from collection while a thread is iterating over that collection. Iterator on ArrayList, HashMap classes are some examples of fail-fast Iterator.
+Fail-Safe iterators don’t throw any exceptions if a collection is structurally modified while iterating over it. This is because, they operate on the clone of the collection, not on the original collection and that’s why they are called fail-safe iterators. Iterator on CopyOnWriteArrayList, ConcurrentHashMap classes are examples of fail-safe Iterator.
+
+38(i) How Fail Fast Iterator works ?
+To know whether the collection is structurally modified or not, fail-fast iterators use an internal flag called modCount which is updated each time a collection is modified.Fail-fast iterators checks the modCount flag whenever it gets the next value (i.e. using next() method), and if it finds that the modCount has been modified after this iterator has been created, it throws ConcurrentModificationException.
+
+
+38(ii).	Difference between Collection and Collections?
+Collection is an interface which can be used to represent a group of similar objects as a single entity.
+Collections is a utility class present in java.util package to define several utility methods like sorting, searching for Collection objects.
+
+38(iii) Diff between Comparable and Comparator?
+The class itself must implements the java.lang.Comparable interface to compare its instances. Comparator is external to the element type we are comparing. It’s a separate class. We create multiple separate classes (that implement Comparator) to compare by different members.
+
+class Movie implements Comparable<Movie>    class RatingCompare implements Comparator<Movie>        class NameCompare implements Comparator<Movie>
+{											{          												{
+    private double rating;						public int compare(Movie m1, Movie m2)					public int compare(Movie m1, Movie m2)
+    private String name;						{														{
+    private int year;								if (m1.getRating() < m2.getRating()) return -1;			return m1.getName().compareTo(m2.getName())
+													if (m1.getRating() > m2.getRating()) return 1;		}
+    // Used to sort movies by year					return 0;										}
+    public int compareTo(Movie m)				}
+    {										}
+        return this.year - m.year;
+    }
+}
+
+
+		ArrayList<Movie> list = new ArrayList<Movie>();
+        list.add(new Movie("Force Awakens", 8.3, 2015));
+        list.add(new Movie("Star Wars", 8.7, 1977));
+        list.add(new Movie("Empire Strikes Back", 8.8, 1980));
+        list.add(new Movie("Return of the Jedi", 8.4, 1983));
+
+		Collections.sort(list)                               // use Comparable
+		Collections.sort(list, new RatingCompare())          // use comparator
+		Collections.sort(list, new NameCompare())            // use comparator
+
+
+38(iv) How many ways to sort a collection?
+List<Integer> list = Arrays.asList(11, 2, 5, 3, 2, 55, 32, 34);
+Comparator<Person> sortByFirstName = Comparator.comparing(p -> p.getFirstName());
+list.sort(sortByFirstName);
+list.sort(null)
+list.sort(Comparator.reverseOrder())
+list.sort(Comparator.comparing(Person::getName).thenComparing(Person::getAge))
+list.stream().sorted().collect(Collectors.toList())
+list.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList())
+Collections.sort(list)
+Collections.sort(list, Comparator.reverseOrder())
+
+39.	Can we start a thread twice ?
+No. If we try it then illegalThreadStateException comes.
+
+39(i). Diff between List and LinkedList?
+List: represent a dynamic array in java and array is the collection of items stored in contiguous memory location. When we dynamically add and remove the items then it automatically resize itself. Manupulating arraylist takes more time due to the internal implementation. Whenever we remove an element, internally, the array is traversed and the memory bits are shifted.
+LinkedList: is a linear data structure where the elements are not stored in contiguous locations and every element is a separate object with a data part and address part. The elements are linked using pointers and addresses. Each element is known as a node. Due to the dynamicity and ease of insertions and deletions, they are preferred over the arrays. Manipulating LinkedList takes less time compared to ArrayList because, in a doubly-linked list, there is no concept of shifting the memory bits. The list is traversed and the reference link is changed.
+
+39(ia) INternal working of HashMap.
+Internally HashMap uses a hashCode of the key Object and this hashCode is further used by the hash function to find the index of the bucket where the new entry can be added. HashMap uses multiple buckets and each bucket points to a Singly Linked List where the entries (nodes) are stored.
+
+39(ii) Diff between HashSet/LinkedHashSet/TreeSet?
+Features      HashSet                              LinkedHashSet                                  TreeSet
+
+Internal      Internally used HashMap for storing  Internally used LinkedHasMap for storing the   Internally used TreeMap for storing
+working       the objects                          the objects									  the objects
+
+When to       When u don't want to maintain the    When u want to maintain the insertion order    When u want to sort the elements by some
+use           insertion order.																	  comparator.
+
+Complexity    O(1)									O(1)										  O(log(n))
+
+Performance	  1										3											  2
+
+Compare       uses equals() and hashCode() method  used equals() and hashCode() method            uses compare() and compareTo() method
+
+Null          allow only one null value            allow only one null value                      doesn't allow any null value.
+elements
+
+list.sort(Comparator.comparing(Person::getName).thenComparing(Person::getAge))
+
+39(iii) Diff between HashMap/LinkedHashMap/TreeMap?
+Feature       HashMap                              LinkedHashMap                                  TreeMap
+
+Complexity    O(1) 								   O(1)											  O(1)
+
+Iteration     Random							   Insertion Order 								  Sorted either according to natural order of
+Order	 																						  keys OR by comparator
+
+Null Keys     allowed 							   Allowed 										  Not allowed
+
+Data		  Array of buckets, if more than 8     Doubly linked list of bucket					  Red-black tree implementaion of binary tree
+Structure     entries in bucket then java 8 will
+			  switch to balance tree from linked
+			  list
+
+40.	Diff between concurrentHashMap and sybchronizedmap ?
+In SynchronuzedMap , the whole map object is locked. But in ConcurrentHashMap case when we perform some modify operation then that bucket is locked and rest of the bucket are free for read operation.
+
+41.	What is the difference between static synchronization and non static synchronization ?
+Synchronization in Java is basically an implementation of monitors . When synchronizing a non static method, the monitor belongs to the instance. When synchronizing on a static method , the monitor belongs to the class. In case of non-static synchronized method memory is allocated multiple time whenever method is calling. But memory for static method is allocated only once at the time of class loading. That means while execution of a static method the whole class is blocked. So other static synchronized methods are also blocked. If one thread is executing a static synchronized method, all other threads trying to execute any static synchronized methods will be blocked.
+
+42.	How to make dynamic query using hibernate criteria ?
+Criteria crit = session.createCriteria(Product.class)
+Crit.add(Restrictions.eq(“dynamic column name”, “dynamic column value”));
+List<Product> list = crit.list();
+
+43.	What is the use of QUEUE in Collection?
+It’s a child interface of Collection.
+QUEUE -> PriorityQueue
+	-> BlockingQueue
+			->LinkedBlockingQueue
+			->PriorityBlockingQueue
+Use case: before sending a mail, all mail id’s we have to store somewhere. And in which order we saved, in the same order mail’s should be delivered. First in First Out.
+
+44.	Which advantages we can get by making arraylist final?
+By making arrayList as final, I can still add, remove and update the element from it.
+Final List<String> list = new ArrayList<>();
+The only advantage is that you can not rebind the reference variable “list” with a new collection object.
+list = new ArrayList<Integer>(); // Since `list' is final, this won't compile
+If you wish, you can prevent insertion, removal etc by using Collections.unmodifiableList():
+final List<Integer> list = Collections.unmodifiableList(new ArrayList<Integer>(...));
+
+
+45.	How many ways to create an immutable list, set or map ?
+i.  ImmutableList immutableList = ImmutableList.copyOf(list)
+ii. ImmutableList<String> immutableList = ImmutableList.of(“one”,”two”,”three”)
+If we create the immutable list from an existing list and change the existing list then immutableList does not change because a copy is created.
+iii. java 9 factory of() method
+	List<String> list = List.of(“one”,”two”,”three”);
+iv. List<String> changedList = Collections.unmodifiableList(list);
+now if we made some changes in list.add(“four”), then these changes are also reflected in immutable changedList. But we can not directly change the changedList.
+
+Note: Collections.unmodifiableList creates a wrapper around the same existing list such that wrapper can not be used to modify it. However we can still change the original list.
+
+46.	Java 9 new features ?
+List.of() : for creating immutable list
+Private method in interface
+Try with resource improvement: no need to initialize the resource variable inside the try block. Now we can simply give the already initialized variable in try block. After try, this resource automatically closed.
+Stream api improvements.
+
+47.	Java 10 new features ?
+Var type: that can accept any kind of value.
+Var numbers = List.of(1,2,3,4,5);
+
+48.	Java 11 new features ?
+i.	Running java file with single cmd. Now we don’t need to compile the java source file with “javac” tool. Now we can directly run the file with “java” cmd and it implicitly compiles.
+ii.	Add new functions in String class i.e.
+String s = “ “; s.isBlank() //true
+s.lines() -> returns a stream of strings, which is split by line \n.
+s = “*”.repeat(3); SOP(s) //***
+iii.	Nested based access control.
+public class Main {
+public void myPublic() { }
+private void myPrivate() { }
+
+class Nested {
+public void nestedPublic() {
+myPrivate();
+}
+}
+}
+
+
+49.	Java 12 new features ?
+i.	Switch expression : enhance switch expression for pattern matching. No need to put break every where.
+String result = switch (day) {
+case "M", "W", "F" -> "MWF";
+case "T", "TH", "S" -> "TTS";
+default -> {
+if(day.isEmpty())
+break "Please insert a valid day.";
+else
+break "Looks like a Sunday.";
+}
+};
+System.out.println(result);
+ii.	Pattern matching for instanceOf(). In older version
+if (obj instanceof String) {
+String s = (String) obj;
+// use s in your code from here
+}
+The new ways is:
+if (obj instanceof String s) {
+// can use s directly here
+}
+
+50.	 JAVA 13 new features?
+i.	Text Blocks : it allows us to create multiline strings easily. The multiline string has to be written inside a pair of triple-double quotes.
+String textBlock = “””
+			HI
+			Hello
+			Yes”””;
+
+String str = “Hi\nHello\Yes”;
+
+SOP(textBlock.equals(str)) //true
+SOP(textBlock == str) //true
+
+ii.	Again switch expression enhancement.
+
+51.	JAVA 14 new features?
+i.	Record(Preview): record is a data class that stores the pure data. The idea behind introducing the record is to quickly create the simple and concise classes.
+e.g. record Author(String name, String topic) {}
+After You’ve compiled the program the generated class looks like
+Final class Author extends java.lang.Record{
+	Public Author(String name, String topic);
+	Public String toString() ;
+	Public final int hashCode();
+	Public final Boolean equals(Object o);
+	Public String name();
+	Public String topic();
+}
+Means java compiler generate the constructor, toString, hashCode, equals, and getter for the data members.
+
+52.	What is the ActiveMQ?
+ActiveMQ is java message service application server that acts like a broker between producer and consumer to which producer are sending the message using a kind of address called Topic or Queue. After receiving a message, the broker forwards message to consumers who have subscribed to the Topic or Queue. A Topic forwards a message from producer to many consumers at once. It’s a broadcast. This is often called publish and subscribe(Pub/Sub) messaging. A Queue may also have many consumers, but it forwards each message to only one consumer. The consumers wait in a line, in a queue, taking turns and getting new message from the queue. This often called point-to-point (P2P) messaging.
+
+53.	What is the Kafka?
+Apache Kafka is a distributed publish-subscribe messaging system that can handle a high volume of data and enable you to pass the messages from one end point to another. Kafka is run as a cluster in one or more servers and cluster stores/retrieve the records in a category called TOPICS. Kafka cluster uses a partitioned log for each TOPICS. The Partition maintains the order in which data was inserted. The new records are always append at the end of partition.
+
+53(i). what is offset in kafka?
+The offset is a unique id assigned to the partitions, which contains messages. The most important use is that it identifies the messages through id, which are available in the partitions. In other words, it is a position within a partition for the next message to be sent to a consumer
+
+
+SPRING BOOT
+
+
+54.	 How to implements the kafka in spring boot ?
+Add the spring-kafka dependency in pom.xml. Download and install the kafka, by default it run on 9092 port. Write a rest api for publish the message to TOPIC.
+
+@RestController
+@RequestMapping(“/kafka”)
+Public class KafkaController{
+
+	@Autowired
+	Private Producer producer;
+
+	@PostMapping(value=”/publish”)
+	Public void sendMessageToKafkaTopic(@Requestparam(“message”) String
+	Message){
+		This.producer.sendMessage(message);
+	}
+}
+
+@Service
+Public class Producer{
+
+	Public static final String TOPIC = “users”;
+
+	@Autowired
+	Private KafkaTemple<String,String> kafkaTemplate;
+
+	Public void sendMessage(String message){
+		This.kafkaTemplate.send(TOPIC,message);
+	}
+}
+
+@Service
+Public class Consumer{
+
+	@KafkaListener(topics=”users”, groupId=”group-id”)
+	Public void consumeMessage(String message){
+		System.out.println(message);
+	}
+
+}
+
+
+In application.properties file
+Spring.kafka.consumer.bootstrap-server = localhost:9092
+Spring.kafka.consumer.groupId = group-id
+Spring.kafka.consumer.auto-offset-reset = earliest
+Key-Serializer , value-Deserializer
+
+Spring.kafka.producer.bootstarp-server = localhost:9092
+Key-serializer , value-Deserializer
+
+
+55.	How to create a spring boot project ?
+Open the https://start.spring.io i.e. spring initializer. Provide the group id , artifact id, description and choose the java version. Then click on the generate button and zip file is downloaded. You can extract that and import into your IDE.
+Or you can directly start a new project by using eclipse.
+
+56.	What is the Spring cloud ?
+When we develop the microservice using spring boot, they all are standalone applications. But now we have to connect the various applications and build a distributed system. For making this microservices architecture where all the services communicate with each other and deployed on a common server is called Spring cloud.
+
+57.	What is the Spring cloud config ?
+Spring cloud config provides server-side and client-side support for externalized configuration in distributed system. With the config server you have a central place to manage the external properties for applications across all environments.
+Basically, a config server allows you to externally store variables your application will need to run in all the environments and update them in just one place.
+For setting up your config server create a spring boot application(microservice) and add the config server dependency.
+@SpringBootApplication
+@EnableConfigServer
+Public class MyConfigServerApplication {
+	Public static void main(Stringp[] s){
+		SpringApplication.run(MyConfigServerApplication.class);
+	}
+}
+If you store all the configuration files on git then add the git server URI, username and password in application.properties file.
+Cloud.config.server.git.uri = http://...............
+Cloud.config.server.git.username = ............
+Cloud.config.server.git.password = .............
+
+Now if you have two microservices i.e. edge-service and item-service then create their configuration file on git like
+Edge-service-prod.properties and edge-service-QA.properties
+Item-service-prod.properties and item-service-QA.properties
+
+Now if you wants to connect the edge-service with its configuration file then add in the application.properties of edge-service
+Spring.profiles = production
+Spring.cloud.config.uri = https://my-config-server.prod.com
+
+Then create a configuration class in edge-service
+@Configuration
+@ConfigurationProperties(prefix=”configurations”)
+Public class ConfigProperties{
+	Private Boolean flag
+	//use the same name that declare in the central configuration file
+}
+
+Note: If we are using azur server then don’t worry about this spring cloud configuration, everything is done by azur itself. Nothing is write in application.properties
+
+58.	How to handle exceptions in spring boot ?
+@RestController
+@CrossOrigin(origins = “http://localhost:4200”)
+@RequestMapping(“api/v1”)
+Public class EmployeeController{
+
+@Autowired
+Private EmployeeRepository employeeRepository;
+
+@GetMapping(“employees/{id}”)
+Public ResponseEntity<Employee> getEmployeeById(@PathVariable(“id”) Long employeeId) throws ResourceNotFoundException{
+
+Employee emp = employeeRepository.findById(employeeId).orElseThrow( () -> new ResourceNotFoundException(“Employee not found for id ::” + employeeId));
+
+Return ResponseEntity.ok().body(emp);
+}
+
+Now need to create a custom checked exception
+
+@ResponseStatus(value = HpptStatus.NOT_FOUND)
+Public class ResourceNotFoundException extends Exception{
+	ResourceNotFoundException(String message){
+		Super(message);
+	}
+}
+
+For returning the error response, let’s create a GlobalErrorExceptionHandler class.
+
+@ControllerAdvice
+Public class GlobalExceptionHandler{
+@ExceptionHandler(ResourceNotFoundException.class)
+Public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest wr){
+ErroDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), wr.getDescription(false));
+Return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+}
+
+@ExceptionHandler(Exception.class)
+Create a parent function for all the exceptions
+}
+
+59.	Advantages of microservices.
+Independent Development : All microservices can easily developed based on their individual functionality.
+Independent Deployment : Based on their services, they can individually deployed in any application.
+Fault Isolation : Even if one of the service of application does not work, the system still continues to work.
+Mixed Technology stack : Different languages and technologies can be used to build different services of the same application.
+Granular Scaling : Individual component can sale as per need, there is no need to scale all components together.
+
+60.	What are the best practice to design the microservices ?
+
+
+61.	How does microservices architecture work ?
+
+
+•	Clients – Different users from various devices send requests.
+•	Identity Providers – Authenticates user or clients identities and issues security tokens.
+•	API Gateway – Handles client requests.
+•	Static Content – Houses all the content of the system.
+•	Management –  Balances services on nodes and identifies failures.
+•	Service Discovery – A guide to find the route of communication between microservices.
+•	Content Delivery Networks – Distributed network of proxy servers and their data centers.
+•	Remote Service – Enables the remote access information that resides on a network of IT devices
+
+62.	What are the challenges that you face while working in microservices architecture?
+Difficult to maintained the configuration of components because there are a number of smaller components. So each component we have to follow the stages of build, deploy and monitor.
+
+63.	What is the use of WebMvcTest annotation in spring mvc applications ?
+@WebMvcTest(value = TestController.class, secure=false)
+WebMvcTest annotation is used for unit testing spring mvc application in case where test objective is to just focus on spring MVC component. In the above statement, we want to launch only TestController. All the other controller and mappings will not be launched when this unit test is executed.
+
+64.	What is the DRY in microservices architecture ?
+DRY stands for ‘Don’t repeat yourself’. It basically promote the concept of reusing the code. This results in developing and sharing the libraries.
+
+65.	How does PACT work ?
+PACT is an open source tool. It helps in testing the interactions between consumers and service providers. The consumer service developer starts writing a test which defines a mode of interaction with service provider. The test includes the provider’s state, request body and the response that is expected. Based on this, PACT creates a stub(dummy objects) against which test is executed. The output is stored in a JSON file.
+
+66.	What is the difference between mock and stub ?
+Stub:
+	Is a dummy object that helps in running the test.
+	Provides the fixed behavior under certain conditions which can be hard coded.
+	Any other behavior of the stub is never tested.
+
+For example, for an empty stack , you can create a stub that just returns true for empty() method. So this does not care whether there is an element in the stack or not.
+
+Mock:
+	Is a dummy object in which certain properties are set initially.
+	The behavior of the object depends of the set properties.
+	The object behavior can also be tested.
+
+For example, for a Customer object, you can mock it by setting the name and age. You can set age as 12 and then test for isAdult() method that will return true for age greater than 18. So your mock Customer object works for specified condition.
+
+67.	What is the purpose of DOCKER?
+Docker provides a container environment that can be used to host any application. In this, the application and the dependencies which support it are tightly packed together.
+So this packed product is called container and since it is done by docker, it is called docker container.
+
+68.	What are reactive extensions in microservices ?
+Reactive extensions or RX is design approach in which we call the multiple services and then compiled a combine response. These calls can be synchronous or asynchronous, blocking or non-blocking. RX is a very popular tool in distributed systems which works opposite to the legacy flows.
+
+69.	What does the @SpringBootAnnotation does internally ?
+@SpringBootAnnotation is equivalent to using @Configuration, @EnableAutoConfiguration and @ComponentScan with their default attributes. Spring boot enables the developer to use single annotation instead of using multiple. But we can also use these annotations individually as per the project needs.
+
+70.	How to disable a specific auto configuration class ?
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+Or we can exclude by using property file
+//By using property file
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+71.	What is the Spring Actuator? What are their advantages ?
+Spring boot provides a lots of auto-configuration features that help developers to quickly develop the production components. But if you think about the debugging, how to debug if something goes wrong. We always need to check the logs and then check the data flow of our application.
+So the Spring actuator provides easy access of these kind of features.
+So we can say that Spring boot actuator is a sub project of spring boot framework. It includes a number of additional features that help us to monitor and manage the spring boot application. It contains like what beans are created, the mapping in the controller, the CPU usage and the end points. We can use HTTP end points to monitor and manage the spring boot application. If we want to get some production ready features (end points, metrics, audits) then we have to use actuator.
+For enable the actuator just add the dependency Spring-boot-starter-actuator. If you don’t want to enable it then don’t add the dependency.
+
+72.	What is the Spring initializer ?
+Spring Initializer is a tool that generate the spring boot project with everything that you need to start it quickly. It helps you to create a project structure properly.
+
+73.	What is the shutdown in the actuator ?
+Shutdown is an endpoint in actuator, that allows application to be gracefully shutdown. This feature is not enabled by default. You can enable this by using management.endpoint.shutdown.enabled = true in your application.property file.
+
+74.	Is this possible to change the embedded tomcat port in spring boot ?
+Yes, you can change by mention the server.port=8081 in your application.properties file. If you mention server.port=0, then it will automatically assign any available port.
+Tomcat, jetty and undertow are the embedded servers in spring boot
+
+75.	What is the Spring boot dependency management ?
+Is basically used to manage the dependency and configuration automatically without you specifying the version of any dependency.
+
+76.	What is the thymeleaf and how to use it ?
+Thymeleaf is a server side java template engine used for web applications. It aims to bring the natural template for your web application and can integrate well with spring framework and java HTML 5 web applications. To use thymeleaf you need to add the dependency i.e.
+Spring-boot-starter-thymeleaf
+
+77.	What is the need for spring boot devtools ?
+Is a developer tool and aims to make the process of developing the application easier. Spring boot devtools pick up the changes and restart the application. If the applications run in production, then this module is automatically disabled. So the devtools applies the properties to the respective of development environment. Spring-boot-devtools
+
+78.	What is the advantages of using YAML file than property file ?
+Data is stored in a hierarchical format. So it becomes very easy for the developers to debug if there is an issue.
+
+79.	How to implements swagger in spring boot ?
+@Configuration
+@EnableSwagger2
+public class SpringFoxConfig {
+    Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+          .select()
+          .apis(RequestHandlerSelectors.any())
+          .paths(PathSelectors.any())
+          .build();
+    }
+}
+
+80.	How to implement Spring security?
+Create a configuration class and annotate it with @EnableWebSecurity and extend it by WebSecurityConfigurerAdapter and override their method configure and configureglobal and by using HttpSecurity we can authorize all the request and provide the antmatcher of our api URL.
+
+
+SPRING BATCH
+
+
+81.	Explain the Spring batch framework?
+Spring batch is a light weight framework that is used to develop the batch application that performs bulk data processing, periodic updates and delegated processing.
+
+82.	How to implement batch processing with spring boot ?
+Use @EnableBatchProcessing with main spring boot application class. Create a configuration class and autowire the JobBuilderFactory and StepBuilderFactory and defines the  job beans functions. Then in controller autowire the JobLauncher and Job and run the job by passing jobparameters.
+
+83.	How can we schedule a spring batch job?
+We can schedule it by using cron job functionality of spring scheduling i.e annotation @Scheduled(cron = “*/5 * * * * *”).
+
+84.	What is the difference between MockMvc and Mockito ?
+mockMvc.perform(get(“/Employee”)).andExpect(status().isOk());
+is used to directly hit the rest service end point that written in controller.
+
+TestController controller = Mockito.mock(TestController.class)
+Is used to create the mock object of a class and then we can call it’s method.
+
+Mockito.when(controller.getName()).thenReturn(“Hello”);
+
+
+85.	How to write test case in spring boot ?
+@ActiveProfiles(“test”)
+@RunWith(SpringRunner.class)
+@SpringBootTest
+Public class TestApp{
+
+@Autowired
+Private WebApplicationContext webApplicationContext;
+
+Private MockMvc mockMvc;
+
+@Before
+Public void setup(){
+	mockMvc = MockMvcBuilder.webAppContextSetup(webApplicationContext).build()
+}
+
+@Test
+Public void testEmployee( ) throws Exception{
+mockMvc.perform(get(“/Employee”)).andExpect(status().isOk()).andExpect(content().contentType(“application/json”).andExpect(jsonPath(“$name”).value(“emp1”));
+}
+
+@Test
+Public void testEmployee1( ) throws Exception{
+	TestController controller = Mockito.mock(TestController.class);
+	Mockito.when(controller.getName()).thenReturn(“emp2”);
+	String name = Controller.getEmpName();
+	Assert.assertEquals(“emp2”,name);
+}
+
+}
+
+ANGULAR
+
+
+86.	What is the difference between component and modules in angular?
+Components controls the view(html). They also communicate with other components and services to bring the functionality to your app.
+Modules consist of one or more components. They do not control the view. Your modules declare that which components can be used by components belonging to other modules, which classes can be injected by dependency injector and which components gets bootstrapped. Modules allows you to manager your components to bring the modularity to your app.
+
+Note: NPM is similar to MAVEN. When we write $npm install -g @angular/cli, it means we add the dependency at global level.
+
+87.	How to apply filter in angular?
+For that we need to create the pipe by using cmd
+$ng g pipe ListFilter  -> That will create a pipe class which extends PipeTransform and we need to give the body of transform method and write the filter logic.
+
+Main component html code:
+<app-search [(searchModel)]=”searchModel”></app-search>
+<mat-list-option *ngFor= “let contact of contacts | listFilter: searchModel></mat-list-option>
+
+$ng g component search
+
+@Component({
+	Selector: ‘app-search’,
+	Template-url: ‘./search-component.html’,
+	styleUrls: [‘./search-component.css’]
+})
+Export class SearchComponent implements OnInit{
+
+	@input searchModel
+	@Output searchModelChange: EventEmitter<any> = new EventEmitter()
+
+	Constructor()	{}
+	ngOnIt()	{}
+
+	updateSearchModel(value){
+		this.searchModel = value;
+		this.searchModelChange.emit(this.searchModel);
+	}
+}
+
+Search-component.html
+
+<mat-form-field floatLabel=never >
+  <input matInput class="searching-customer" type="text"  placeholder="Search"
+         [ngModel]="searchModel"
+         (ngModelChange)="updateSearchModel($event)">
+</mat-form-field>
+
+
+88.	How to reuse some HTML part everywhere in angular ?
+For that we need to create a component and in the associated html file write the html code.
+After that you just need to use the selector of that component where you want to reuse it.
+
+89.	How to share data between two sibling components?
+First share the data child to parent using output decorator and event emitter. Once received data in parent component then share it with another child using input decorator.
+
+90.	What is the event emitter and @input, @output in angular ?
+If we want our component to notify the parent component about something then use the output decorator with event emitter to create a custom event.
+@Input is used when we passing some data from parent to child
+@Output is used to receive an event from child to parent component.
+
+e.g.
+
+
+export class AppComponent implements OnInit {
+    products = [];
+    title = 'Products';
+    ngOnInit() {
+        this.products = this.getProducts();
+    }
+    getProducts() {
+        return [
+            { 'id': '1', 'title': 'Screw Driver', 'price': 400, 'stock': 11 },
+            { 'id': '2', 'title': 'Nut Volt', 'price': 200, 'stock': 5 },
+            { 'id': '3', 'title': 'Resistor', 'price': 78, 'stock': 45 },
+            { 'id': '4', 'title': 'Tractor', 'price': 20000, 'stock': 1 },
+            { 'id': '5', 'title': 'Roller', 'price': 62, 'stock': 15 },
+        ];
+    }
+
+productToUpdate: any;
+changeStockValue(p) {
+    this.productToUpdate = this.products.find(this.findProducts, [p.id]);
+    this.productToUpdate.stock = this.productToUpdate.stock + p.updatdstockvalue;
+}
+findProducts(p) {
+    return p.id === this[0];
+}
+
+}
+
+<div class="container">
+    <br />
+    <h1 class="text-center">{{title}}</h1>
+    <table class="table">
+        <thead>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Stock</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of products">
+                <td>{{p.id}}</td>
+                <td>{{p.title}}</td>
+                <td>{{p.price}}</td>
+                <td>{{p.stock}}</td>
+                <td><app-stock-status [productId]='p.id' [stock]='p.stock'
+(stockValueChange)='changeStockValue($event)'></app-stock-status></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+import { Component, Input, EventEmitter, Output, OnChanges } from '@angular/core';
+@Component({
+    selector: 'app-stock-status',
+    template: `<input type='number' [(ngModel)]='updatedstockvalue'/>
+		<button class='btn btn-primary' [style.background]='color'
+     		(click)="stockValueChanged()">Change Stock Value</button> `
+})
+export class StockStatusComponent implements OnChanges {
+    @Input() stock: number;
+    @Input() productId: number;
+    @Output() stockValueChange = new EventEmitter();
+    color = '';
+    updatedstockvalue: number;
+    stockValueChanged() {
+        this.stockValueChange.emit({ id: this.productId, updatdstockvalue: this.updatedstockvalue });
+        this.updatedstockvalue = null;
+    }
+    ngOnChanges() {
+        if (this.stock > 10) {
+            this.color = 'green';
+        } else {
+            this.color = 'red';
+        }
+    }
+}
+
+
+91.	How to deploy angular front end application on azure ?
+$npm run build  -> will create the production package(build) for our angular application.
+Now goto the build folder by using azure CLI.
+$az webapp up --name appName  --plan planName  --resource-group  resourceGroupName.
+We are creating a web HTML application on azure by using the build folder.
+
+
+AZURE
+
+92.	Create a app using azure cmd ?
+$ az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup
+Required parameters are
+--name/  -n : name of the app
+--service/  -s : Name of azure cloud. You can create the default service using az configure –defaults spring-cloud=
+--resource-group/  --g : Name of the resource group. You can create the default group using az configure –defaults group=<name>
+
+93.	How to deploy the spring boot application on azure ?
+Create a Spring boot project and then we have to configure couple of things.
+i.	Add azure-webapp-maven-plugin in pom.xml.
+In the build section of pom.xml
+<build>
+	<plugins>
+		<plugin>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>azure-webapp-maven-plugin</artifatId>
+			<version>1.7.0</version>
+		</plugin>
+	</plugins>
+</build>
+ii.	Now need to run this plugin. Right click on the project and select maven build.
+Enter the goal azure-webapp:config. So the name of the plugin is azure-webapp and goal is config. Then click on run. All the dependencies download.
+Then it automatically select all the default properties. Now check your pom.xml that a <configuration></configuration> tag added in your plugin. That contains resourceGroup, appName, pricingTier, region, runtime OS and deployment resource directory of your package (jar/war).
+					Or
+We can configure this by using CMD. Open your cmd and goes to the project directory.
+$ mvn azure-webapp:config
+Then select all the properties.
+We can change this configuration in our pom.xml.
+For setting the port just add the
+<appSetting>
+	<property>
+		<name>JAVA_OPTS</name>
+		<value>-Dserver.port=80</value>
+	</property>
+</appSetting>
+iii.	For deploying to azure we need the azure command line interface(CLI). Install the azure CLI. Goto the https://docs.microsoft.com. Open the CLI and check
+$ az –verion.
+Now we need to login on azure account through azure CLI.
+$ az login -> Then a browser window launched and you need to enter the azure account credentials. We can see that we successfully login on azure CLI.
+
+iv.	Now move to project directory in azure CLI and run
+$ mvn clean install -> build your package(jar/war)
+$ mvn azure-webapp:deploy.
+This cmd will create all the pom configuration on azure like resourceGroup, appName
+
+v.	Check you azure account in ‘All Resources’ tab that your resourceGroup , appName, services are created.
+
+
+API
+94.	How to rollback the transaction in spring boot?
+@Transactional(rollbackFor={Exception.class}, noRollbackFor = { SQLException.class })
+public void changes() throws Exception {
+            someLogicBefore();
+    databaseChanges();
+    someLogicAfter();
+}
+
+OR
+
+public void createCourseDefaultRatingProgramatic(Course course) {
+try
+{
+	courseDao.create(course);
+} catch (Exception e) {
+	TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+}
+}
+
+
+95.	FAT model and ANEMIC model?
+ANEMIC model: When we are creating the entity classes then the entity have only the getter/setter and all the fields name. All the business logic written in another classes(Service class). When we require that business logic then we inject that service class in our layer. Due to that loose coupling and tight cohesion achieved.
+
+Rich model: if we place all the business logic inside the entity class.
+
+
+96.	CQRS pattern in microservices?
+Command Query Responsibility Segregation goal is to clearly separate both the service and controller layers to deal with read queries and write queries.
+e.g.
+public interface UserQueryService{
+	List<User> getUsersList(int page, int size, String sortDir, String sort);
+
+  String checkPasswordResetToken(long userId, String token);
+
+  String checkConfirmRegistrationToken(String token);
+
+	long countAllUsers();
+}
+
+Public interface UserCommandService{
+	void registerNewUser(String username, String email, String password, String appUrl);
+
+	void updateUserPassword(User user, String password, String oldPassword);
+
+	void changeUserPassword(User user, String password);
+
+	void resetPassword(String email, String appUrl);
+
+	void createVerificationTokenForUser(User user, String token);
+
+	void updateUser(User user);
+
+}
+
+
+Public UserQueryController{
+	Use the UserQueryService and perform all the read operations
+}
+
+Public UserCommandController{
+	Use the UserCommandService and perform all the CURD operations
+}
+
+
+97.	Bounded Context in microservices?
+In a traditional monolithic application, the entire application is mapped to a single database and CRUD operations are handled by single database.
+In microservices environment with a bounded context may not be backed by the same database. They all worked in a distributed environment and connect with their own databases.
+
+
+98.	What is the meaning of service decomposition ?
+Divide a monolithic application into several microservices is called service decomposition. If a monolithic application have finance module, HR module, employee module, helpdesk and admin module. Then make separate microservices for all these modules is called service decomposition.
+
+
+99.	What is cache in spring boot?
+In spring boot cache abstraction is a mechanism that allows consistent use of various caching methods with minimal impact on the code.
+Cache abstraction mechanism applies to java methods. The main objective of using cache abstraction is to reduce the no of executions based on the information present in the cache.
+Every time when a method is invoked, the abstraction applies a cache behavior to the method. It checks whether the method has already been executed for the given parameters or not.
+
+If yes, the cached result is returned without executing the actual method.
+If no, first the method executes, and the result is cached and returned to the user.
+
+We need to add dependency spring-boot-starter-cache.
+@SpringBootApplication
+@EnableCaching
+public class CacheExampleApplication {
+    public static void main(String[] args) {
+          SpringApplication.run(CacheExampleApplication.class, args);
+    }
+}
+
+@Cacheable(cacheNames="headers", condition=”#id > 1”)
+public int cachedFunction(int value)
+{
+  ..... complicated and difficult calculations ....
+  return N;
+}
+
+int value=cachedFunction(1);
+int otherValue=cachedFunction(2);
+int thirdValue=cachedFunction(1);  //give the cached result.
+
+Later, in the function flushCache we put the tag @CacheEvict that cleans the indicated cache. Also, in this case, we tell it to delete all the entries that it has in cache.
+@CacheEvict(cacheNames="headers", allEntries=true)
+public void flushCache() { }
+
+
+AWS
+
+100.	What is the most important feature of cloud ?
+On demand resource provisioning : If I need any resource on my machine whether it’s any we-server, DB-server, other configuration. Then I just need to raise the request and I’ll get the resource on demand.
+
+101.	What is the Elastic Beanstalk service in java ?
+With Elastic Beanstalk you can deploy, monitor and scale an application quickly and easily.
+
+
+102.	What is EC2?
+Elastic compute cloud are the virtual servers on which applications are deployed or we can say that allows the user to rent the virtual computers on which to run their own computer applications. Once the EC2 instance initiated then it has one private and one public IP also.
+EC2 instances are charged by the amount of time they are running.
+
+103.	What are the security groups?
+Security groups are acting as a “firewall” on EC2 instance.
+They regulate the access to port, authorized IP range, control of inbound/outbound network. Inbound means what kind of request can come to EC2 and outbound means what kind of respponse can go outside the EC2.
+
+We can attached one security group to multiple EC2 instances and one EC2 instance can connect with multiple security groups.
+In security group by default all inbound traffic are blocked and all outbound traffic is authorized.
+
+104.	What is the elastic IPs?
+When you stop and then start your EC2 instance then it can change its public IP. If you need to have a fix public IP to your EC2 instance, you need an elastic IP. An elastic IP is a public IP4 IP, you own as long as you don’t delete it. You can attach it to one EC2 instance at a time.
+You can have only 5 elastic IP with your AWS account.\
+
+105.	AWS IAM?
+Identity and access management enables you to manage access to AWS services and resources securely. Using IAM, you can create and manage AWS users and groups, and use permissions to allow and deny their access to AWS resources. IAM is a feature of your AWS account offered at no additional charge.
+Note: Some of the services are regional services and some of them are global services.
+		IAM - global service
+		EC2 - regional service
+
+106. EC2 instance types
+	There are multiple types of EC2 instances in AWS. "t2.micro" is one of them.
+	t - Instance Family
+	2 - generation. Improvements with each generation.
+	micro - size. (nano < micro < small < medium < large < xlarge < .....
+	(Remember) As size increases, compute(CPU, GPU), memory and networking
+	capabilities increase proportionately
+
+107. Can we access installed webserver on EC2 instance by using public IP?
+	The default security group can have only SSH connection. SO we have to add one more rule in attached security group for HTTP request. Only then we can access it by using public IP.
+
+108. How to connect with EC2 instance?
+	Select ur EC2 instance and Click on connect button. That will open the connected CMD. The 1st step u have to perform is make yourself as a super user.
+	"sudo su"
+
+109. What are the instance meta data service and dynamic service?
+	Instance meta data service:
+	Get details about EC2 instance from inside an EC2 instance:
+	AMI ID, storage devices, DNS hostname, instance id, instance type, security groups, IP addresses etc
+	URL: http://169.254.169.254/latest/meta-data/
+	URL Paths: network, ami-id, hostname, local-hostname, local-ipv4 , public-hostname, public-ipv4, security-groups, placement/availability-zone
+	example: http://169.254.169.254/latest/meta-data/hostname
+
+	Dynimic data service:
+	Get dynamic information about EC2 instance:
+	URL: http://169.254.169.254/latest/dynamic/
+	Example:
+		http://169.254.169.254/latest/dynamic/instance-identity/document
+
+110. What is the meaning of security groups are statefull?
+	Means if an incoming request is allowed (Http) then outgoing response for it is automatically allowed.
+
+111. What is the bootstraping in EC2?
+	Means install software when an EC2 instance is launched.
+
+112. What is the user-data and lunched templates?
+	Whenever u wants to do something at the time of loading the EC2 instance then use user-data.
+	Whenever u wants to minimize the number of steps for initiating the EC2 instance then use the launched templates.
+
+Note: AMI(Amazon machine image)	contains the OS and software that u wants to run on EC2 instance. You can share your AMI with other AWS account also.
+	  AMI's are stroed in Amazon S3(region specific).
+
+============================================================================
+concurrenthashmap internal starctural
+copyonwritearraylist
+
+
+doc type ->
+DOM ->
+
+display none      : object and space dono ko hide kr dega
+visibility hidden : object hide hoga, space bna rhega
+inline css        : <div style="">
+internal css      : <head><style>   </style></head>
+external css      : seperate file
+
+block level
+
+<p><div>      	: block level (next line m ajata h>
+<span>			: inline level -> aamne samne ate h (autowidth p work krta h)
+
+
+SAGA pattern
+correlation_id
+stream is lazy
+
+merge sort -> Collections.sort -> nlogn
+splunk
+
+
+
+
+
+
+

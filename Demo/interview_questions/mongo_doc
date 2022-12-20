@@ -1,0 +1,112 @@
+########################### Mongo DB ################################################
+1. Store the data in the binary form of JSON called BSON.
+2. In SQL DB we have relationship between the tables and use join for fetching the data and it will take time. But in NOSQL DB there is no
+	relationship and don't require any JOIN and fetch the result very fast.
+3. Mongo DB terms
+						SQL                                                  MongoDB
+						Database											Database
+						Table												Collection
+						Column												Field
+						Row													Document
+						Foreign Key											Sub Document(Refernce)
+4. mongod --storageEngine=mmapv1    //run this cmd in C:\Windows\System32\cmd.exe
+5. Studio3T is the UI-connector for mongo db.
+	master paswword - admin
+6. Basic update query by using intelliShell
+	db.getCollection("Student").updateMany(
+		{
+			"name" : {
+				 $in : ["Subhash", "rohit"]
+			}
+		},
+		{
+			 $set : {
+				  "age" : 29
+			 }
+		}
+	)
+
+	Basic Search query
+	db.student.find(
+		{
+			"name" : "rohit"
+		}
+	)
+7. If I want to run the query through CMD then open the mongo.exe file and write
+	$mongo
+	$use db-name
+	$db.student.find(
+		{
+			"name" : "rohit"
+		}
+	)
+
+8. Mogo DB with spring boot
+	Need to add the maven dependency i.e. spring.boot.starter.data.mongodb
+	and add all the database host, port and db name information in our application.propeties file
+
+9. Entity class mapping with mongodb
+	@Document(collection = "student")
+	public class Student{
+
+		@Id
+		private String id,
+
+		@Field(name = "mai")
+		private String email;
+
+		private String name;
+
+		@PersistenceConstructor ==> required when you have more than one constructor in your class.
+	}
+
+10. Use of MongoRepository
+	public interface StudentRepository extends MongoRepository<Strudent, String>{}
+
+11. Order by in mongo db
+	db.collection.find().sort( { age: -1 } )  // in desending order
+		OR
+	db.collection.find( { $query: {}, $orderby: { age : -1 } } )
+
+12. Get document by sub document
+	db.student.find(
+		{
+			"department.department_name" : "CSE"
+		}
+	)
+
+13. Like query and starts with query
+	db.student.find(
+			{
+				"mail" : /gmail/
+			}
+		)
+
+	db.student.find(
+			{
+				"name" : /^rohit/
+			}
+		)
+
+14. Relationship between collections in entity class
+	@Document(collection = "student")
+	public class Student{
+
+		@Id
+		private String id,
+
+		@Field(name = "mai")
+		private String email;
+
+		private String name;
+
+		@DBRef
+		private Department department;
+
+		@DBRef (lazy = true) //when we make lazy loading true then this sub documents list will not come by default. We need to write logic for getting this.
+		private List<Subject> subjects;
+	}
+
+15. Native MongoDB query in spring boot
+	@Query("{ \"name\" : \"?0\" }")
+	public List<Student> getByName(String name)

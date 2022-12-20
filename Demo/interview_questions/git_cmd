@@ -1,0 +1,179 @@
+git version
+~ $ git config --global user.name "Rohit Kaushik"
+~ $ git config --global user.email "rohit.kaushik1@publicissapient.com"
+~ $ git config -- global --list
+user.name=Rohit Kaushik
+user.email=rohit.kaushik1@publicissapient.com
+
+#create a git reporisoty/working directory folder
+~ $ git init projects #only when you want to create a new git project in ur local
+
+
+#clone the project, first goto the project folder
+projects $ git clone URL
+# it will create a git repository/directory of the complete project
+projects $ ls
+project-name/
+
+projects $ cd project-name/
+(master) project-name $ ls
+#all the files of the project are listed
+
+(master) project-name $ git status
+on branch master
+your branch is up-to-date with 'origin/master'
+
+#if we did any changes in file and then check the status
+(master) project-name $ git status
+
+#it will show the untracked file and it's in working directory only. for commiting that changes
+(master) project-name $ git add .
+
+#now the file comes in staging area. If we want to commit that files in local repository
+(master) project-name $ git commit -m "Adding changes"
+
+#if we want to add and commit the files in a single cmd then use
+(master) project-name $ git commit -am "Adding and commiting changes"
+
+#for pushing the changes in actual remote master branch
+(master) project-name $ git push origin master
+
+#if I did the changes in a file 'level1.txt' and add these changes in staging area by using git add level1.txt
+#Now I want to remove that file from staging area to back in working directory the
+(master) project-name $ git reset head level1.txt
+
+#If I want to remove the changes from level1.txt that I've done
+(master) project-name $ git checkout level1.txt
+
+#If I want to rename my file ===========================
+(master) project-name $ git mv current-file-name new-file-name
+#Afer that when you check the git status, then git renamed the file and move it in staging area
+#But if you rename the file without using git cmd, by using git bash "mv" or by using operating system
+#then git deleted the "current-file-name" file and create a new untracked file "new-file-name"
+# now in 2nd case for adding this renamed file in staging area we need
+(master) project-name $ git add -A
+
+
+#If I want to see the commit history that shows the author,date and commit message
+(master) project-name $ git log
+
+#If I want to see the history of specific file
+(master) project-name $ git log  -- file-name.txt
+
+#If I know the commit id then want to see the history of that commit
+(master) project-name $ git show bjahdsjhashdg78y9878970979009
+
+#If I wanted to ignore any file for commit then add that file/folder/*.file extension in .gitignore file
+
+
+
+
+=================================================== Comparision ================================================================
+
+#If I want to see the difference between working directory and statging then
+(master) project-name $ git difftool
+
+#If I want to see the difference between working directory and last commit then
+(master) project-name $ git difftool HEAD
+(master) project-name $ git difftool -- file-name HEAD
+
+#If I want to see the difference between staging directory and last commit then
+(master) project-name $ git difftool --staged HEAD
+
+#If I want to see the difference between commits
+(master) project-name $ git log --oneline
+(master) project-name $ git difftool commitID1 commitID2
+(master) project-name $ git difftool commitID HEAD  //HEAD represent the latest commit
+(master) project-name $ git difftool HEAD HEAD^  //HEAD^ represent the commit prior to the latest commit
+
+#If I want to see the difference between local master branch and remote master branch
+(master) project-name $ git difftool master origin/master
+
+
+
+
+=================================================== Branching And Merging ================================================================
+
+#If I want to see the list of all the branches
+(master) project-name $ git branch -a
+
+#For creating a new branch
+(master) project-name $ git branch mynewbranch
+
+#If I want to switch into another branch
+(master) project-name $ git checkout mynewbranch
+
+#If I want to rename the branch
+(master) project-name $ git branch -m mynewbranch newbranch
+
+#If I want to zoo a branch
+(master) project-name $ git branch -d newbranch
+
+#If I want to checkout in newbranch and also create the newbranch in a single cmd
+(master) project-name $ git checkout -b newbranch
+
+#If I want to merge my feature(newbranch) branch changes in master with a happy path
+(newbranch) project-name $ git checkout master
+(master) project-name $ git difftool master newbranch
+(master) project-name $ git merge newbranch
+
+#If we are working in our feature branch (newbranch) and now want to commit the changes
+#the first go on master, take a new pull and then merge into our feature branch
+#resolve the conflict and then commit feature branch changes
+(newbranch) project-name $ git commit -am "feature changes"
+(newbranch) project-name $ git checkout master
+(master) project-name $ git pull
+(master) project-name $ git checkout newbranch
+(newbranch) project-name $ git merge master
+(newbranch) project-name $ git mergetool
+#resolve all the conflict and then commit in feature branch
+
+
+
+
+
+=================================================== Rebasing ================================================================
+
+#If there are some changes present in master branch and you want to add those changes in feature
+# branch then use the rebase cmd, if there is no conflict then all the changes comes in feature branch
+(newbranch) project-name $ git rebase master
+
+#If during the rabase conflict occure then and I want to abort that
+(newbranch) project-name $ git rebase --abort
+
+# If I want to resolve the conflict during rebase then simply use the merge tool for that and resolve the conflict
+(newbranch) project-name $ git rebase master
+(newbranch) project-name $ git mergetool
+#resolve all the conflict
+(newbranch) project-name $ git rebase --continue
+
+
+
+
+
+=================================================== Stashing ================================================================
+
+#If I did any changes in a file and add that by using git add. Now I want to remove that staging changes
+(master) project-name $ git stash
+
+#If I want all the stashed changes back in my current branch
+(master) project-name $ git stash apply
+(master) project-name $ git stash list
+
+#If I want to stash the untracked files also
+(master) project-name $ git stash -u
+
+#We can create the multiple stashes and can see all of them
+(master) project-name $ git stash list
+
+#If we are making the stash multiple times then we can give the save message
+(master) project-name $ git stash save "simple changes "
+
+#we can see the specific stash changes and can apply that
+(master) project-name $ git stash show stash@{1}
+(master) project-name $ git stash apply stash@{1}
+(master) project-name $ git stash drop stash@{1}
+(master) project-name $ git stash clear //clear all the stash.
+
+#We can create the new branch with stashed changes of master
+(master) project-name $ git stash brnach newchanges
