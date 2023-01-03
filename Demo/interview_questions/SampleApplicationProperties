@@ -1,0 +1,157 @@
+server:
+  port: '9090'
+header:
+  source:
+    name: OutwardPaymentService
+service:
+  name: international-payment-transfer
+  version: 1.0.0
+spring:
+  kafka:
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP-SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP-SERVERS:localhost:9092}
+      group-id: app_transfer_international_outward_payment_service
+      topic:
+        payment-status: uaenorth__wise__international_transfer_outward_payment_status__raw_v1_mock
+        payment-reInitiated: uaenorth_international_transfer_outward_payment_re_initiate_raw_v1_mock
+event:
+  header:
+    additional-info-created-: Creates the payment and publish payment data
+    additional-info-prefunded-: Prefunds the payment and publish payment data
+    event-name-created: international_transfer_outward_payment_created
+    event-name-prefunded: international_transfer_outward_payment_funded
+    additional-info-initiated: Initiates the payment and publish payment data
+    source-name: OutwardPaymentService
+    event-name-initiated: international_transfer_outward_payment_initiated
+transaction:
+  reference:
+    prefix: I
+notification:
+  templates:
+    device-template-id: DEVICE_TEMPLATE_ID
+    email-template-id: EMAIL_TEMPLATE_ID
+    payment-initiated-sms-template-id: SMS_PAYMENT_INITIATED_TEMPLATE_ID
+    payment-refunded-sms-template-id: SMS_PAYMENT_REFUNDED_TEMPLATE_ID
+timeout:
+  connect:
+    rest: '10000'
+  read:
+    rest: '15000'
+mambu-local-transfers-username: dummy
+mpo-sync-api-url: http://localhost:1080/api/1/json
+mambu-local-transfers-password: dummy
+azure:
+  keyvault:
+    enabled: 'false'
+get:
+  recipient:
+    endpoint: http://localhost:1080/api/v1/transfer/international/recipients/{recipientId}
+logging:
+  level:
+    com:
+      neobank:
+        transfer:
+          international: DEBUG
+identity:
+  channel: INT
+mpo:
+  wise:
+    connector:
+      type: create
+      obj: task
+device:
+  status:
+    check:
+      endpoint:
+        url: http://localhost:1080/api/v1/device/check-status
+      enabled: 'true'
+  info:
+    endpoint:
+      url: http://localhost:1080/api/v1/device
+jwt:
+  token:
+    expiry: '5'
+mpo-login-id: '36'
+2fa:
+  enabled: 'true'
+  service:
+    endpoint: http://localhost:1080/api/v1/twofa/validate
+customer:
+  service:
+    individual:
+      endpoint: http://localhost:1080/api/v1/customer/individual/search
+    business:
+      endpoint: http://localhost:1080/api/v1/customer/business/search
+apim-base-url: http://localhost:1080/dev
+mpo-transfer-requirement-conv-id: '1502'
+token:
+  api:
+    url: http://localhost:1080/api/v1/transfer/international/tokens/{tokenKey}
+jwt-token-secret: Y+gRV05Q26PGf+sUbsDLig==
+producer:
+  topic:
+    payment:
+      prefunded: uaenorth_international_transfer_outward_payment_funded_raw_v1_mock
+      created: uaenorth_international_transfer_outward_payment_created_raw_v1_mock
+    beneficiary:
+      update: uaenorth_beneficiary_international_modify_raw_v1_mock
+mpo-prefund-p1-conv-id: '1393'
+data-platform:
+  international:
+    search-by:
+      transfer-id: ?transferId=
+    url: http://localhost:1080/payments_international_transfer/transaction
+screening:
+  service:
+    endpoint:
+      url: http://localhost:1080/api/v1/transactions/screening/
+mpo-create-refund-recipient-conv-id: '1381'
+inject:
+  missing:
+    customer:
+      data: 'true'
+mpo-wise-connector-secret: dummy-secret
+mpo-company-id: i253723707
+kafka:
+  topic:
+    producer:
+      notification: uaenorth_customer_notification_generated_raw_v1_mock
+mpo-patch-quote-conv-id: '1455'
+mpo-prefund-p2-conv-id: '1394'
+ae:
+  wio:
+    security:
+      authorization:
+        disabled:
+          get: /v3/api-docs
+mambu:
+  balance:
+    endpoint:
+      url: http://localhost:1080/api/v1/deposits/{depositId}
+
+currency:
+  exclusion:
+    list:
+      url: http://localhost:1080/api/v1/currency/exclusion_list
+
+association:
+  entity:
+    type: Authorized Individual
+api:
+  context:
+    path: /api/v1/transfer/international
+
+
+
+
+private String getUniqueNumber() {
+        String uniqueNUmber = String.valueOf(System.nanoTime());
+        if (uniqueNUmber.length() > TXN_REF_MAX_INDEX) {
+            return uniqueNUmber.substring(TXN_REF_MIX_INDEX, TXN_REF_MAX_INDEX);
+        }
+        return uniqueNUmber;
+    }
